@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface RegionService {
 
-  public String create(RegionCreateDTO dto);
+  String create(RegionCreateDTO dto);
 
-  public List<ValueLabelDTO> findAll();
+  List<ValueLabelDTO> findAll();
 }

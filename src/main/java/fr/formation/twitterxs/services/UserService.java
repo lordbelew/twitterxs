@@ -1,11 +1,14 @@
 package fr.formation.twitterxs.services;
 
 import fr.formation.twitterxs.dto.UserCreateDTO;
+import fr.formation.twitterxs.dto.UserUpdatePasswordDTO;
 
 public interface UserService {
 
-  public String create(UserCreateDTO dto);
+  String create(UserCreateDTO dto);
 
-  public String delete(Long id);
+  String updatePassword(UserUpdatePasswordDTO dto);
+
+  String delete(Long id);
 
 }

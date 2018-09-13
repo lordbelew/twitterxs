@@ -18,9 +18,6 @@ public class RegionController {
   @Autowired
   RegionService service;
 
-  public RegionController() {
-  }
-
   @GetMapping("/list")
   protected List<ValueLabelDTO> list() {
     return service.findAll();

@@ -3,6 +3,7 @@ package fr.formation.twitterxs.controllers;
 import fr.formation.twitterxs.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,10 +15,14 @@ public class AdminController {
   @Autowired
   private UserService userService;
 
-
   @DeleteMapping("/deleteUser/{id}")
   protected String deleteUser(@PathVariable("id") Long id) {
     return userService.delete(id);
   }
 
+  @GetMapping("/template/{className}")
+  protected Object template(@PathVariable("className") String className) throws Exception {
+    return Class.forName(className).newInstance();
+  }
 }
+
