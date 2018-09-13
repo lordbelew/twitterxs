@@ -10,6 +10,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+;
+
 /**
  * This class represents user security info. It defines the domain model and its mapping strategy
  * for user security.
