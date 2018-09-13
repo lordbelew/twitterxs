@@ -116,7 +116,7 @@ public class UserSecurity implements Serializable {
    * Two {@code User} objects are considered equal if their {@code username} are equal
    * case-sensitively.
    *
-   * @param an object to test equality against
+   * @param obj an object to test equality against
    * @return {@code true} if this {@code user security} is the same as {@code obj}; {@code false}
    * otherwise
    * @see String#equals(Object)
@@ -126,7 +126,7 @@ public class UserSecurity implements Serializable {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof User)) {
+    if (!(obj instanceof UserSecurity)) {
       return false;
     }
     UserSecurity other = (UserSecurity) obj;
