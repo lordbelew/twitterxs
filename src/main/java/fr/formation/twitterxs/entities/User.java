@@ -1,12 +1,11 @@
-package fr.formation.twitterxs.entities;
+package fr.formation.twitterxs.domain.entities;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,15 +15,24 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
+/**
+ * This class represents a user entity. It defines the domain model and its mapping strategy for
+ * users.
+ */
 @Entity
-public class User implements Serializable {
+public class User implements BusinessEntity {
 
- //private static final long serialVersionUID = 3607470165921841356L;
+  private static final long serialVersionUID = -1890491345830999462L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Version
+  @Column(nullable = false)
+  private LocalDateTime optLock;
 
   @Column(length = 100, nullable = false)
   private String lastname;
@@ -45,40 +53,47 @@ public class User implements Serializable {
   @JoinColumn(nullable = false)
   private Region region;
 
-  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private Set<Tweet> tweets;
-
   @Embedded
   private UserSecurity security;
 
-/*
+  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  private Set<Tweet> tweets;
+
   @OneToMany(mappedBy = "liker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private Set<LikedTweet> likedTweets;
-  */
 
-public static enum Role {
-  ROLE_USER,
-  ROLE_ADMIN,
-  ROLE_ACTUATOR;
-
-  public static Role getDefault() {
-    return ROLE_USER;
-  }
-
-  public boolean isUser() {
-    return equals(ROLE_USER);
-  }
-}
-
-
+  /**
+   * Creates a new {@code User} with default values.
+   */
   public User() {
+    // Default no-arg constructor
+  }
+
+  /**
+   * Keep private for security and consistency.
+   */
+  @SuppressWarnings("unused")
+  private LocalDateTime getOptLock() {
+    return optLock;
+  }
+
+  /**
+   * Keep private for security and consistency.
+   */
+  @SuppressWarnings("unused")
+  private void setOptLock(LocalDateTime lock) {
+    optLock = lock;
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  /**
+   * Keep private for security and consistency.
+   */
+  @SuppressWarnings("unused")
+  private void setId(Long id) {
     this.id = id;
   }
 
@@ -130,6 +145,14 @@ public static enum Role {
     this.region = region;
   }
 
+  public UserSecurity getSecurity() {
+    return security;
+  }
+
+  public void setSecurity(UserSecurity security) {
+    this.security = security;
+  }
+
   public Set<Tweet> getTweets() {
     return tweets;
   }
@@ -137,7 +160,7 @@ public static enum Role {
   public void setTweets(Set<Tweet> tweets) {
     this.tweets = tweets;
   }
-/*
+
   public Set<LikedTweet> getLikedTweets() {
     return likedTweets;
   }
@@ -145,5 +168,108 @@ public static enum Role {
   public void setLikedTweets(Set<LikedTweet> likedTweets) {
     this.likedTweets = likedTweets;
   }
- */
+
+  /**
+   * Indicates whether some other object is "equal to" this {@code user}.
+   * <p>
+   * Two {@code User} objects are considered equal if their {@code email} are equal
+   * case-sensitively.
+   *
+   * @param an object to test equality against
+   * @return {@code true} if this {@code user} is the same as {@code obj}; {@code false} otherwise
+   * @see String#equals(Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof User)) {
+      return false;
+    }
+    User other = (User) obj;
+    return email.equals(other.email);
+  }
+
+  /**
+   * Returns a hash code value for this {@code user}.
+   * <p>
+   * This implementation is consistent with {@link #equals(Object)}.
+   *
+   * @return a hash code value for this {@code user}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(email);
+  }
+
+  /**
+   * Returns a string representation of this {@code user}.
+   *
+   * @return a string representation of this {@code user}
+   */
+  @Override
+  public String toString() {
+    // Do not print collections!
+    return "{id=" + id + ", lastname=" + lastname + ", firstname="
+        + firstname + ", email=" + email + ", birthDate=" + birthDate
+        + ", subscriptionDate=" + subscriptionDate + ", region="
+        + region + "}";
+  }
+
+  /**
+   * Enumeration of roles.
+   * <p>
+   * Enumeration order is not meaningful.
+   */
+  public static enum Role {
+    /**
+     * The ROLE_USER role.
+     */
+    ROLE_USER("USER"),
+    /**
+     * The ROLE_ADMIN role.
+     */
+    ROLE_ADMIN("ADMIN"),
+    /**
+     * The ROLE_ADMIN role.
+     */
+    ROLE_ACTUATOR("ACTUATOR");
+
+    private final String notPrefixed;
+
+    private Role(String notPrefixed) {
+      this.notPrefixed = notPrefixed;
+    }
+
+    /**
+     * Returns the default role.
+     *
+     * @return the default role; {@code ROLE_USER}
+     */
+    public static Role getDefault() {
+      return ROLE_USER;
+    }
+
+    public boolean isUser() {
+      return equals(ROLE_USER);
+    }
+
+    public boolean isAdmin() {
+      return equals(ROLE_ADMIN);
+    }
+
+    public boolean isActuator() {
+      return equals(ROLE_ACTUATOR);
+    }
+
+    /**
+     * Returns the name of this {@code role} without its prefix {@code "ROLE_"}.
+     *
+     * @return the name without its prefix
+     */
+    public String withoutPrefix() {
+      return notPrefixed;
+    }
+  }
 }

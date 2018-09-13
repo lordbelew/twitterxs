@@ -1,7 +1,7 @@
-package fr.formation.twitterxs.entities;
+package fr.formation.twitterxs.domain.entities;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,19 +14,23 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+/**
+ * This class represents a tweet. It defines the domain model and its mapping strategy for tweets.
+ */
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"author_id", "postDate"}))
-public class Tweet implements Serializable {
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"author_id",
+    "postDate"}))
+public class Tweet implements BusinessEntity {
 
-  private static final long serialVersionUID = -5772526226721943953L;
+  private static final long serialVersionUID = 1140413763101124326L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  /*@Version
+  @Version
   @Column(nullable = false)
-  private LocalDateTime optLock;*/
+  private LocalDateTime optLock;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(nullable = false)
@@ -38,40 +42,58 @@ public class Tweet implements Serializable {
   @Column(nullable = false)
   private LocalDateTime editDate;
 
-  public static long getSerialVersionUID() {
-    return serialVersionUID;
+  @Column(length = 280, nullable = false)
+  private String content;
+
+  /**
+   * Creates a new {@code Tweet} with default values.
+   */
+  public Tweet() {
+    // Default no-arg constructor
+  }
+
+  /**
+   * Keep private for security and consistency.
+   */
+  @SuppressWarnings("unused")
+  private LocalDateTime getOptLock() {
+    return optLock;
+  }
+
+  /**
+   * Keep private for security and consistency.
+   */
+  @SuppressWarnings("unused")
+  private void setOptLock(LocalDateTime lock) {
+    optLock = lock;
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  /**
+   * Keep private for security and consistency.
+   */
+  @SuppressWarnings("unused")
+  private void setId(Long id) {
     this.id = id;
-  }
-
-  public User getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(User author) {
-    this.author = author;
   }
 
   public LocalDateTime getPostDate() {
     return postDate;
   }
 
-  public void setPostDate(LocalDateTime postDate) {
-    this.postDate = postDate;
+  public void setPostDate(LocalDateTime date) {
+    postDate = date;
   }
 
   public LocalDateTime getEditDate() {
     return editDate;
   }
 
-  public void setEditDate(LocalDateTime editDate) {
-    this.editDate = editDate;
+  public void setEditDate(LocalDateTime date) {
+    editDate = date;
   }
 
   public String getContent() {
@@ -82,7 +104,57 @@ public class Tweet implements Serializable {
     this.content = content;
   }
 
-  @Column(length = 280, nullable = false)
-  private String content;
+  public User getAuthor() {
+    return author;
+  }
 
+  public void setAuthor(User author) {
+    this.author = author;
+  }
+
+  /**
+   * Indicates whether some other object is "equal to" this {@code tweet}.
+   * <p>
+   * Two {@code Tweet} objects are considered equal if their {@code author} and {@code postDate} are
+   * equal.
+   *
+   * @param an object to test equality against
+   * @return {@code true} if this {@code tweet} is the same as {@code obj}; {@code false} otherwise
+   * @see String#equals(Object)
+   * @see LocalDateTime#equals(Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof Tweet)) {
+      return false;
+    }
+    Tweet other = (Tweet) obj;
+    return author.equals(other.author) && postDate.equals(other.postDate);
+  }
+
+  /**
+   * Returns a hash code value for this {@code tweet}.
+   * <p>
+   * This implementation is consistent with {@link #equals(Object)}.
+   *
+   * @return a hash code value for this {@code tweet}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(author, postDate);
+  }
+
+  /**
+   * Returns a string representation of this {@code tweet}.
+   *
+   * @return a string representation of this {@code tweet}
+   */
+  @Override
+  public String toString() {
+    return "{id=" + id + ", author=" + author + ", postDate=" + postDate
+        + ", editDate=" + editDate + "}";
+  }
 }
