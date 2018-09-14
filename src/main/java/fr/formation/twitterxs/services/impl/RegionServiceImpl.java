@@ -1,24 +1,28 @@
 package fr.formation.twitterxs.services.impl;
 
+import fr.formation.twitterxs.domain.entities.Region;
 import fr.formation.twitterxs.dto.RegionCreateDTO;
 import fr.formation.twitterxs.dto.ValueLabelDTO;
+import fr.formation.twitterxs.repository.RegionJpaRepository;
 import fr.formation.twitterxs.services.RegionService;
-import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegionServiceImpl implements RegionService {
 
+  @Autowired
+  private RegionJpaRepository jpaRepo;
+
   @Override
-  public String create(RegionCreateDTO dto) {
-    return dto.getCountry() + " ==> " + dto.getLanguage();
+  public void create(RegionCreateDTO dto) {
+    Region region = EntityHelper.asRegion(dto);
+    jpaRepo.save(region);
   }
 
   @Override
   public List<ValueLabelDTO> findAll() {
-    ValueLabelDTO a = new ValueLabelDTO(1L, "fr_CA");
-    ValueLabelDTO b = new ValueLabelDTO(2L, "fr_FR");
-    return Arrays.asList(a, b);
+    return jpaRepo.findAllAsDto();
   }
 }

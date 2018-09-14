@@ -4,9 +4,10 @@ import fr.formation.twitterxs.dto.RegionCreateDTO;
 import fr.formation.twitterxs.dto.ValueLabelDTO;
 import java.util.List;
 
+
 public interface RegionService {
 
-  String create(RegionCreateDTO dto);
+  void create(RegionCreateDTO dto);
 
   List<ValueLabelDTO> findAll();
 }

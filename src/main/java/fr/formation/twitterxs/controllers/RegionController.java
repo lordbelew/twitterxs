@@ -24,7 +24,7 @@ public class RegionController {
   }
 
   @PostMapping("/create")
-  protected String createRegion(@RequestBody RegionCreateDTO dto) {
-    return service.create(dto);
+  protected void createRegion(@RequestBody RegionCreateDTO dto) {
+    service.create(dto);
   }
 }

@@ -21,8 +21,8 @@ public class UserController {
   }
 
   @PostMapping("/create")
-  protected String createUser(@RequestBody @Valid UserCreateDTO user) {
-    return userservice.create(user);
+  protected void createUser(@RequestBody @Valid UserCreateDTO user) {
+    userservice.create(user);
   }
 
   @PutMapping("/updatePassword")

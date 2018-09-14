@@ -5,7 +5,7 @@ import fr.formation.twitterxs.dto.UserUpdatePasswordDTO;
 
 public interface UserService {
 
-  String create(UserCreateDTO dto);
+  void create(UserCreateDTO dto);
 
   String updatePassword(UserUpdatePasswordDTO dto);
 
